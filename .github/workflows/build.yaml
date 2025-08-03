@@ -30,13 +30,12 @@ jobs:
         sudo apt install pipx zip
         pipx ensurepath
         pipx install https://github.com/tmick0/sourceknight/archive/refs/heads/master.zip --include-deps
-        zip -v NoLobbyReservation.zip csgo/**/*
 
     - name: Build
       id: build_package
       run: |
         sourceknight build nolobbyreservation
-
+        zip -v NoLobbyReservation.zip csgo/**/*
 
     - name: Build Changelog
       id: github_release
