@@ -1,0 +1,47 @@
+name: build
+
+on:
+  push:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      security-events: write
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Install SourceKnight
+      id: install_sourceknight
+      run: |
+        sudo apt install pipx
+        pipx ensurepath
+        pipx install https://github.com/tmick0/sourceknight/archive/refs/heads/master.zip --include-deps
+
+    - name: Build
+      id: build_package
+      run: |
+        sourceknight build nolobbyreservation
+
+    - name: Build Changelog
+      id: github_release
+      uses: mikepenz/release-changelog-builder-action@v5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Release
+      uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+      with:
+        body: ${{steps.github_release.outputs.changelog}}
