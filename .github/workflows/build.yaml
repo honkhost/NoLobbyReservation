@@ -2,6 +2,8 @@ name: build
 
 on:
   push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -25,14 +27,16 @@ jobs:
     - name: Install SourceKnight
       id: install_sourceknight
       run: |
-        sudo apt install pipx
+        sudo apt install pipx zip
         pipx ensurepath
         pipx install https://github.com/tmick0/sourceknight/archive/refs/heads/master.zip --include-deps
+        zip -v NoLobbyReservation.zip csgo/**/*
 
     - name: Build
       id: build_package
       run: |
         sourceknight build nolobbyreservation
+
 
     - name: Build Changelog
       id: github_release
@@ -44,3 +48,6 @@ jobs:
       uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
       with:
         body: ${{steps.github_release.outputs.changelog}}
+        files: |
+          NoLobbyReservation.zip
+          csgo/**/*
