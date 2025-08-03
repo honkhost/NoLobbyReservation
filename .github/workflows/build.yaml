@@ -35,7 +35,7 @@ jobs:
       id: build_package
       run: |
         sourceknight build nolobbyreservation
-        zip -v NoLobbyReservation.zip csgo/**/*
+        zip -vr NoLobbyReservation.zip csgo
 
     - name: Build Changelog
       id: github_release
